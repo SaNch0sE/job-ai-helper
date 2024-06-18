@@ -1,5 +1,5 @@
 import ProjectsTable from "@/components/projects/table";
-import { NextUIProvider, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { NextUIProvider } from "@nextui-org/react";
 
 export default function PreviousJobs() {
   return (
