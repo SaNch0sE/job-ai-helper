@@ -3,13 +3,13 @@
 import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useState } from "react";
 import { useAsyncList } from "@react-stately/data";
-import Project from "@/interfaces/project.interface";
+import IProjectTable from "./interfaces/project-table.interface";
 
 export default function ProjectsTable() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  let projects = useAsyncList<any>({
+  let projects = useAsyncList<IProjectTable>({
     async load({signal, cursor}) {
       if (cursor) {
         setPage((prev) => prev + 1);
