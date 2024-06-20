@@ -1,60 +1,24 @@
 "use client"
 
 import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { useState } from "react";
-import { useAsyncList } from "@react-stately/data";
 import IProjectTable from "./interfaces/project-table.interface";
 
-export default function ProjectsTable() {
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+export interface IProjectsTableProps { projects: IProjectTable[] };
 
-  let projects = useAsyncList<IProjectTable>({
-    async load({signal, cursor}) {
-      if (cursor) {
-        setPage((prev) => prev + 1);
-      }
-
-      // If no cursor is available, then we're loading the first page.
-      // Otherwise, the cursor is the next URL to load, as returned from the previous page.
-      const res = await fetch('/api/projects', {
-        signal,
-        method: 'POST',
-        body: JSON.stringify({
-          limit: 10,
-          fromId: cursor,
-          skipId: !!cursor,
-        }),
-      });
-      let json = await res.json();
-      
-
-      if (!cursor) {
-        setIsLoading(false);
-      }
-
-      return {
-        items: json.results,
-        cursor: json.next,
-      };
-    },
-  });
-
-  const hasMore = page < 9;
-  
+export default function ProjectsTable({ projects }: IProjectsTableProps) {
   return (
     <Table
     isHeaderSticky
-      aria-label="Example table with client side sorting"
+      aria-label="Projects table"
       bottomContent={
-        hasMore && !isLoading ? (
           <div className="flex w-full justify-center">
-            <Button isDisabled={projects.isLoading} variant="flat" onPress={projects.loadMore}>
-              {projects.isLoading && <Spinner color="white" size="sm" />}
-              Load More
+            <Button variant="flat">
+              Prev
+            </Button>
+            <Button variant="flat">
+              Next
             </Button>
           </div>
-        ) : null
       }
       classNames={{
         base: "max-h-[520px]",
@@ -73,8 +37,7 @@ export default function ProjectsTable() {
         <TableColumn>Actions</TableColumn>
       </TableHeader>
       <TableBody
-      isLoading={isLoading}
-      items={projects.items}
+      items={projects}
       loadingContent={<Spinner label="Loading..." />}
       >
         {(item) =>

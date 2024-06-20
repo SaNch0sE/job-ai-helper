@@ -1,17 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma/prisma.service";
 import IPagination from "../interfaces/pagination.interface";
 import Project from "@/interfaces/project.interface";
 
 export default class ProjectService {
-  private db: PrismaClient;
-
-  constructor(client: PrismaClient) {
-    this.db = client;
-  }
-
-  async get(pagination: IPagination): Promise<Project[]> {
+  static async get(pagination: IPagination): Promise<Project[]> {
     if (pagination.fromId) {
-      return this.db.projects.findMany({
+      return prisma.projects.findMany({
         take: pagination.limit,
         skip: Number(pagination.skipId),
         cursor: {
@@ -23,7 +17,7 @@ export default class ProjectService {
       });
     }
 
-    return this.db.projects.findMany({
+    return prisma.projects.findMany({
       take: pagination.limit,
       orderBy: {
         id: pagination.order,
@@ -31,14 +25,14 @@ export default class ProjectService {
     });    
   }
 
-  async create(data: Project) {
-    return this.db.projects.create({
+  static async create(data: Project) {
+    return prisma.projects.create({
       data,
     });
   }
 
-  async update(data: Project) {
-    return this.db.projects.update({
+  static async update(data: Project) {
+    return prisma.projects.update({
       where: {
         id: data.id,
       },
@@ -47,8 +41,8 @@ export default class ProjectService {
   }
 
 
-  async delete(id: number) {
-    return this.db.projects.delete({
+  static async delete(id: number) {
+    return prisma.projects.delete({
       where: { id },
     })
   }
