@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma/prisma.service";
 import IPagination from "../interfaces/pagination.interface";
 import Project from "@/interfaces/project.interface";
+import ICreateProjectInput from "@/interfaces/create-input.interface";
 
 export default class ProjectService {
   static async get(pagination: IPagination): Promise<Project[]> {
@@ -25,16 +26,16 @@ export default class ProjectService {
     });    
   }
 
-  static async create(data: Project) {
+  static async create(data: ICreateProjectInput) {
     return prisma.projects.create({
       data,
     });
   }
 
-  static async update(data: Project) {
+  static async update(id: number, data: ICreateProjectInput) {
     return prisma.projects.update({
       where: {
-        id: data.id,
+        id,
       },
       data,
     });

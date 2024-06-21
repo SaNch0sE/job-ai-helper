@@ -1,7 +1,8 @@
 "use client"
 
 import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import IProjectTable from "./interfaces/project-table.interface";
+import IProjectTable from "@/interfaces/project-table.interface";
+import nullString from "./utils/null-string";
 
 export interface IProjectsTableProps { projects: IProjectTable[] };
 
