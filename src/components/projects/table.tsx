@@ -2,23 +2,21 @@
 
 import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import IProjectTable from "@/interfaces/project-table.interface";
-import nullString from "./utils/null-string";
+import TablePaginationBtn from "./pagination-button";
 
-export interface IProjectsTableProps { projects: IProjectTable[] };
+export interface IProjectsTableProps { projects: IProjectTable[], lastId: number | null, className: string };
 
-export default function ProjectsTable({ projects }: IProjectsTableProps) {
+export default function ProjectsTable({ projects, lastId, className }: IProjectsTableProps) {
   return (
     <Table
+    className={className}
+    isCompact
     isHeaderSticky
       aria-label="Projects table"
       bottomContent={
           <div className="flex w-full justify-center">
-            <Button variant="flat">
-              Prev
-            </Button>
-            <Button variant="flat">
-              Next
-            </Button>
+            <TablePaginationBtn type="prev" projects={projects} disabled={projects.at(0)?.id === lastId} />
+            <TablePaginationBtn type="next" projects={projects} disabled={projects.at(-1)?.id === 1} />
           </div>
       }
       classNames={{
@@ -35,13 +33,13 @@ export default function ProjectsTable({ projects }: IProjectsTableProps) {
         <TableColumn>Links</TableColumn>
         <TableColumn>Modified</TableColumn>
         <TableColumn>Created</TableColumn>
-        <TableColumn>Actions</TableColumn>
+        <TableColumn>Action</TableColumn>
       </TableHeader>
       <TableBody
       items={projects}
       loadingContent={<Spinner label="Loading..." />}
       >
-        {(item) =>
+        {(item) => 
         <TableRow key={item.id}>
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.name}</TableCell>
@@ -51,9 +49,11 @@ export default function ProjectsTable({ projects }: IProjectsTableProps) {
           <TableCell>{item.links}</TableCell>
           <TableCell>{item.dateModified}</TableCell>
           <TableCell>{item.dateCreated}</TableCell>
-          <TableCell><Button>Update</Button>|<Button>Delete</Button></TableCell>
+          <TableCell><Button size="sm" variant="flat">View</Button></TableCell>
         </TableRow>}
       </TableBody>
     </Table>
   );
 };
+
+

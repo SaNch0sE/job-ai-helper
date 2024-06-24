@@ -25,5 +25,5 @@ export default async function CreateProjectAction(formData: FormData) {
 
   console.log(created);
 
-  revalidatePath("/previous-jobs")
+  revalidatePath("/previous-jobs");
 }

@@ -26,6 +26,25 @@ export default class ProjectService {
     });    
   }
 
+  static async getOne(id?: number): Promise<Project | null> {
+    if (id) {
+      return prisma.projects.findFirst({
+        where: {
+          id,
+        },
+        orderBy: {
+          id: "desc",
+        },
+      });
+    }
+
+    return prisma.projects.findFirst({
+      orderBy: {
+        id: "desc",
+      },
+    });
+  }
+
   static async create(data: ICreateProjectInput) {
     return prisma.projects.create({
       data,
