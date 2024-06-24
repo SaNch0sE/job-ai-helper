@@ -1,7 +1,7 @@
 "use server"
 
 import ICreateProjectInput from "@/interfaces/create-input.interface";
-import CreateProjectSchema from "@/schemas/create-project.schema";
+import CreateProjectSchema from "@/validation/schemas/create-project.schema";
 import ProjectService from "@/services/projects/projects.service";
 import { revalidatePath } from "next/cache";
 

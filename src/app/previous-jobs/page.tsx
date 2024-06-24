@@ -3,7 +3,7 @@ import ProjectService from "@/services/projects/projects.service";
 import { NextUIProvider } from "@nextui-org/react";
 import IJobsSearchParams from "../../interfaces/jobs-search-params.interface";
 import transformProjectToTable from "@/components/projects/utils/transform-project-to-table";
-import PaginationSchema from "@/schemas/pagination.schema";
+import PaginationSchema from "@/validation/schemas/pagination.schema";
 import Project from "@/interfaces/project.interface";
 import IPagination from "@/services/interfaces/pagination.interface";
 import CreateProjectModalBtn from "@/components/projects/create-modal";
