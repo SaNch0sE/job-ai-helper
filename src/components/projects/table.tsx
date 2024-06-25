@@ -1,12 +1,21 @@
 "use client"
 
-import { Button, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import IProjectTable from "@/interfaces/project-table.interface";
 import TablePaginationBtn from "./pagination-button";
+import ViewProjectModalBtn from "./view-modal";
+import IHighlightRow from "@/interfaces/highlight-row.interface";
 
-export interface IProjectsTableProps { projects: IProjectTable[], lastId: number | null, className: string };
+export interface IProjectsTableProps extends Partial<IHighlightRow> {
+  projects: IProjectTable[],
+  lastId: number,
+  className: string,
+};
 
-export default function ProjectsTable({ projects, lastId, className }: IProjectsTableProps) {
+export default function ProjectsTable({ projects, lastId, className, highlightId, highlightStyle }: IProjectsTableProps) {
+  // TODO: Use new style option to apply custom classNames on created OR updated rows
+  console.log(highlightId, highlightStyle);
+
   return (
     <Table
     className={className}
@@ -40,7 +49,7 @@ export default function ProjectsTable({ projects, lastId, className }: IProjects
       loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => 
-        <TableRow key={item.id}>
+        <TableRow className={highlightId === item.id ? 'bg-green-800' : ''} key={item.id}>
           <TableCell>{item.id}</TableCell>
           <TableCell>{item.name}</TableCell>
           <TableCell>{item.description}</TableCell>
@@ -49,7 +58,7 @@ export default function ProjectsTable({ projects, lastId, className }: IProjects
           <TableCell>{item.links}</TableCell>
           <TableCell>{item.dateModified}</TableCell>
           <TableCell>{item.dateCreated}</TableCell>
-          <TableCell><Button size="sm" variant="flat">View</Button></TableCell>
+          <TableCell><ViewProjectModalBtn item={item} /></TableCell>
         </TableRow>}
       </TableBody>
     </Table>

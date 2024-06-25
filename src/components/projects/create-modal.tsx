@@ -2,22 +2,9 @@
 
 import CreateProjectAction from "@/actions/projects/create";
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
-import { usePathname, useRouter } from "next/navigation";
-
-type FormSubmitThisType = {
-  onClose: () => void;
-};
 
 export default function CreateProjectModalBtn() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const onFormSubmit = function (this: FormSubmitThisType) {
-    router.push(pathname);
-    
-    return this.onClose();
-  };
 
   return (
     <>
@@ -34,11 +21,11 @@ export default function CreateProjectModalBtn() {
                   <Textarea label="Features" name="features"></Textarea>
                   <Textarea label="Tech Stack" name="techstack"></Textarea>
                   <Input type="text" label="Links" name="links"></Input>
-                  <Button type="submit" color="primary" onPress={onFormSubmit.bind({ onClose })}>Create</Button>
+                  <Button type="submit" color="primary" onPress={onClose}>Create</Button>
                 </form>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button variant="flat" color="secondary" onPress={onClose}>
                   Close
                 </Button>
               </ModalFooter>

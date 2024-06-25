@@ -60,7 +60,6 @@ export default class ProjectService {
     });
   }
 
-
   static async delete(id: number) {
     return prisma.projects.delete({
       where: { id },

@@ -5,7 +5,7 @@ import cutString from "./cut-string";
 const transformProjectToTable = (project: Project): IProjectTable => {
   return {
     ...project,
-    description: cutString(project.features),
+    description: cutString(project.description),
     features: cutString(project.features),
     techstack: cutString(project.techstack),
     links: cutString(project.links),
