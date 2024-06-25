@@ -21,9 +21,7 @@ export default async function CreateProjectAction(formData: FormData) {
     return;
   }
 
-  const created = await ProjectService.create(validate.data);
-
-  console.log(created);
+  await ProjectService.create(validate.data);
 
   revalidatePath("/previous-jobs");
 }

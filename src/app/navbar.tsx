@@ -1,16 +1,11 @@
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, User } from "@nextui-org/react";
 
-export default function ProjectsNavbar() {
+export default function BaseNavbar() {
   return (
     <Navbar position="static">
       <NavbarBrand>
         <p className="font-bold text-inherit">AI Helper</p>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          {/* Centered content */}Center
-        </NavbarItem>
-      </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
           <User

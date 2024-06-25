@@ -1,5 +1,5 @@
-import IPagination from "@/services/interfaces/pagination.interface";
+import IBasePagination from "@/services/interfaces/base-pagination.interface";
 
 export default interface IJobsSearchParams {
-  searchParams: IPagination;
+  searchParams: IBasePagination;
 }
