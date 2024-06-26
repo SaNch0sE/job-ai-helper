@@ -1,5 +1,6 @@
 export enum EnProjectAction {
-  "create",
-  "update",
-  "delete"
+  create = "create",
+  update = "update",
+  delete = "delete",
+  none = "",
 }

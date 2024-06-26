@@ -9,6 +9,9 @@ import { redirect } from "next/navigation";
 import setSearchParams from "@/utils/set-search-params";
 import { EnProjectAction } from "@/enums/project-action.enum";
 import HighlightRow from "@/interfaces/highlight-row.interface";
+import concatParamsFromUrlPath from "@/utils/concat-params-from-url-path";
+
+const projectsTableUrl = "/previous-jobs";
 
 export default async function EditProjectAction(formData: FormData) {
   const input: IEditProjectInput = {
@@ -37,13 +40,9 @@ export default async function EditProjectAction(formData: FormData) {
     highlightId: validate.data.id,
     highlightStyle: EnProjectAction.update,
   };
-  const path = validate.data.oldPath || "/previous-jobs";
-
+  const path = validate.data.oldPath || projectsTableUrl;
+  
   revalidatePath(path);
   
-  if (validate.data.oldPath) {
-    redirect(`${path}${setSearchParams(highlight)}`);
-  }
-
-  redirect(path);
+  redirect(`${projectsTableUrl}?${concatParamsFromUrlPath(path, highlight)}`);
 }
