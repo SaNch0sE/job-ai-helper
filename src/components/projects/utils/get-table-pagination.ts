@@ -1,9 +1,9 @@
 import IProjectTable from "@/interfaces/project-table.interface";
 import setSearchParams from "@/utils/set-search-params";
-import { Prisma } from "@prisma/client";
 import IBasePagination from "@/services/interfaces/base-pagination.interface";
+import SortOrder from "@/enums/sort-order.enum";
 
-export default function getTablePagination(pathname: string, order: Prisma.SortOrder, projects: IProjectTable[]) {
+export default function getTablePagination(pathname: string, order: SortOrder, projects: IProjectTable[]) {
   return `${pathname}?${getPaginationSearchParams({
     order,
     fromId: projects.at(order === "desc" ? -1 : 0)?.id,

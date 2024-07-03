@@ -1,8 +1,9 @@
 import NextAuth from "next-auth"
-import oidcProvider from "./services/auth/oidc-provider"
-import prismaAdapter from "./services/auth/prisma-adapter"
- 
+import authConfig from "./auth.config";
+import dbAdapter from "./services/auth/db-adapter";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: prismaAdapter,
-  providers: [oidcProvider],
+  adapter: dbAdapter,
+  session: { strategy: 'jwt' },
+  ...authConfig,
 });

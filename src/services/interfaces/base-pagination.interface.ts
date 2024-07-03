@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
+import SortOrder from "@/enums/sort-order.enum";
 
 export default interface IBasePagination {
-  order: Prisma.SortOrder;
+  order: SortOrder;
 
   fromId?: number;
 

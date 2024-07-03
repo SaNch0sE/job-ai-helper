@@ -6,7 +6,6 @@ import IEditProjectInput from "@/interfaces/edit-input.interface";
 import EditProjectSchema from "@/validation/schemas/edit-project.schema";
 import _ from "lodash";
 import { redirect } from "next/navigation";
-import setSearchParams from "@/utils/set-search-params";
 import { EnProjectAction } from "@/enums/project-action.enum";
 import HighlightRow from "@/interfaces/highlight-row.interface";
 import concatParamsFromUrlPath from "@/utils/concat-params-from-url-path";

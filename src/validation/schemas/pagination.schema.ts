@@ -1,11 +1,11 @@
 import { z } from "zod";
-import PrismaOrderEnum from "./enums/prisma-order.enum";
 import booleanStringSchema from "../utils/boolean-string.schema";
+import SortOrder from "@/enums/sort-order.enum";
 
 const PaginationSchema = z.object({
   limit: z.coerce.number(),
 
-  order: z.enum(PrismaOrderEnum),
+  order: z.nativeEnum(SortOrder),
 
   fromId: z.coerce.number().optional(),
 

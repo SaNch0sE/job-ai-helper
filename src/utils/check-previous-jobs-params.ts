@@ -1,8 +1,8 @@
 import PaginationSchema from "@/validation/schemas/pagination.schema";
 import projectConstants from "@/components/projects/utils/constants";
 import HighlightIdSchema from "@/validation/schemas/highlight-id.schema";
-import { Prisma } from "@prisma/client";
 import IJobsSearchParams from "@/interfaces/jobs-search-params.interface";
+import SortOrder from "@/enums/sort-order.enum";
 
 export default function checkPreviousJobsParams({ searchParams }: IJobsSearchParams) {
   const validatePagination = PaginationSchema.safeParse({
@@ -21,5 +21,5 @@ export default function checkPreviousJobsParams({ searchParams }: IJobsSearchPar
 
   return validatePagination.success
     ? { ...validatePagination.data, highlightId, highlightStyle }
-    : { order: Prisma.SortOrder.desc, limit: projectConstants.tableRowLimit, highlightId, highlightStyle };
+    : { order: SortOrder.desc, limit: projectConstants.tableRowLimit, highlightId, highlightStyle };
 }
