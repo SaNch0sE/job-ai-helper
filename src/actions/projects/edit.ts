@@ -1,6 +1,5 @@
 "use server"
 
-import ProjectService from "@/services/projects/projects.service";
 import { revalidatePath } from "next/cache";
 import IEditProjectInput from "@/interfaces/edit-input.interface";
 import EditProjectSchema from "@/validation/schemas/edit-project.schema";
@@ -9,6 +8,7 @@ import { redirect } from "next/navigation";
 import { EnProjectAction } from "@/enums/project-action.enum";
 import HighlightRow from "@/interfaces/highlight-row.interface";
 import concatParamsFromUrlPath from "@/utils/concat-params-from-url-path";
+import { projectService } from "@/services/projects/projects.service";
 
 const projectsTableUrl = "/previous-jobs";
 
@@ -30,7 +30,7 @@ export default async function EditProjectAction(formData: FormData) {
     return;
   }
 
-  await ProjectService.update(
+  await projectService.update(
     validate.data.id,
     _.pick(validate.data, ["name", "description", "features", "techstack", "links"]),
   );
@@ -40,8 +40,8 @@ export default async function EditProjectAction(formData: FormData) {
     highlightStyle: EnProjectAction.update,
   };
   const path = validate.data.oldPath || projectsTableUrl;
-  
+
   revalidatePath(path);
-  
+
   redirect(`${projectsTableUrl}?${concatParamsFromUrlPath(path, highlight)}`);
 }

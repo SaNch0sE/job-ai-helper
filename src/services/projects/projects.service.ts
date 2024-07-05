@@ -1,12 +1,31 @@
 import { project } from "@/db/schema/project";
-import ICreateProjectInput from "@/interfaces/create-input.interface";
 import Project from "@/interfaces/project.interface";
 import IPagination from "../interfaces/pagination.interface";
 import { dbService } from "@/db/service";
 import { asc, desc, eq, gt, lt } from "drizzle-orm";
+import CreateProjectFormData from "@/interfaces/create-form-data.interface";
+import { createEmbedding } from "../openai/openai.service";
 
-export default class ProjectService {
-  static async get(pagination: IPagination): Promise<Project[]> {
+class ProjectService {
+  private concatProjectData(prj: Partial<Project>): string {
+    if (!prj.name || !prj.description) {
+      throw new Error("invalid project passed. Can't concat");
+    }
+
+    // Only spaces for better embeddings according to OpenAI
+    return `${prj.name} Description ${prj.description}`
+      + `Features ${prj.features || "Empty..."}`
+      + `Tech stack ${prj.techstack || "Empty..."}`
+      + `Links ${prj.links || "Empty..."}`;
+  }
+
+  private async createProjectEmbedding(prj: CreateProjectFormData): Promise<Array<number>> {
+    const input = this.concatProjectData(prj);
+
+    return createEmbedding(input);
+  }
+
+  async get(pagination: IPagination): Promise<Project[]> {
     return dbService
       .select()
       .from(project)
@@ -17,7 +36,7 @@ export default class ProjectService {
       .orderBy(pagination.order === 'asc' ? asc(project.id) : desc(project.id));
   }
 
-  static async getOne(id?: number): Promise<Project | null> {
+  async getOne(id?: number): Promise<Project | null> {
     const first = await dbService.query.project.findFirst({
       where: id ? eq(project.id, id) : undefined,
       orderBy: [desc(project.id)],
@@ -26,26 +45,36 @@ export default class ProjectService {
     return first || null;
   }
 
-  static async create(data: ICreateProjectInput) {
+  async create(data: CreateProjectFormData) {
+    const embedding = await this.createProjectEmbedding(data);
     const [created] = await dbService
       .insert(project)
-      .values(data)
+      .values({
+        ...data,
+        embedding,
+      })
       .returning();
 
     return created;
   }
 
-  static async update(id: number, data: ICreateProjectInput) {
+  async update(id: number, data: CreateProjectFormData) {
+    const embedding = await this.createProjectEmbedding(data);
     return dbService
       .update(project)
-      .set(data)
+      .set({
+        ...data,
+        embedding,
+      })
       .where(eq(project.id, id))
       .returning();
   }
 
-  static async delete(id: number) {
+  async delete(id: number) {
     return dbService
       .delete(project)
       .where(eq(project.id, id));
   }
 }
+
+export const projectService = new ProjectService();

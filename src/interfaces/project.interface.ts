@@ -5,7 +5,7 @@ export default interface Project {
   features: string | null;
   techstack: string | null;
   links: string | null;
-  embedding: number[] | null,
+  embedding: Array<number> | null,
   dateCreated: Date;
   dateModified: Date;
 }

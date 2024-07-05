@@ -2,16 +2,16 @@ import CreateProjectModalBtn from "@/components/projects/create-modal";
 import ProjectsTable from "@/components/projects/table";
 import transformProjectToTable from "@/components/projects/utils/transform-project-to-table";
 import Project from "@/interfaces/project.interface";
-import ProjectService from "@/services/projects/projects.service";
 import checkPreviousJobsParams from "@/utils/check-previous-jobs-params";
 import { NextUIProvider } from "@nextui-org/react";
 import _ from "lodash";
 import IJobsSearchParams from "@/interfaces/jobs-search-params.interface";
+import { projectService } from "@/services/projects/projects.service";
 
 export default async function PreviousJobs({ searchParams }: IJobsSearchParams) {
   const { highlightId, highlightStyle, ...pagination } = checkPreviousJobsParams({ searchParams });
-  const projects: Project[] = _.orderBy(await ProjectService.get(pagination), ["id"], "desc");
-  const lastId = (await ProjectService.getOne())?.id || 0;
+  const projects: Project[] = _.orderBy(await projectService.get(pagination), ["id"], "desc");
+  const lastId = (await projectService.getOne())?.id || 0;
 
   return (
     <main className="h-screen overflow-hidden">
