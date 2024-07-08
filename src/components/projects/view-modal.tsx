@@ -2,7 +2,7 @@
 
 import EditProjectAction from "@/actions/projects/edit";
 import IProjectTable from "@/interfaces/project-table.interface";
-import { Button, ButtonGroup, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
 import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toFormValue } from "./utils/to-form-value";
 import DeleteProjectAction from "@/actions/projects/delete";
@@ -50,22 +50,22 @@ export default function ViewProjectModalBtn({ item }: IViewProjectModalItem) {
                   <Textarea label="Features" name="features" defaultValue={toFormValue(item.features)}></Textarea>
                   <Textarea label="Tech Stack" name="techstack" defaultValue={toFormValue(item.techstack)}></Textarea>
                   <Input type="text" label="Links" name="links" defaultValue={toFormValue(item.links)}></Input>
-                  <Button type="submit" color="success" onPress={onFormSubmit.bind({ onClose })}>Update</Button>
-                </form>
-              </ModalBody>
-              <ModalFooter>
-                <form action={DeleteProjectAction}>
-                  <input type="number" name="id" value={item.id.toString()} hidden readOnly></input>
-                  <ButtonGroup>
-                    <Button type="submit" color="danger" onPress={onFormSubmit.bind({ onClose })}>
+                  <div className="w-full flex justify-between">
+                    <Button color="danger" onPress={async () => {
+                      const formData = new FormData();
+
+                      formData.append("id", item.id.toString());
+
+                      return DeleteProjectAction(formData).finally(onFormSubmit.bind({ onClose }));
+                    }}>
                       Delete
                     </Button>
-                    <Button color="secondary" onPress={onClose}>
-                      Close
+                    <Button type="submit" color="success" onPress={onFormSubmit.bind({ onClose })}>
+                      Update
                     </Button>
-                  </ButtonGroup>
+                  </div>
                 </form>
-              </ModalFooter>
+              </ModalBody>
             </>
           )}
         </ModalContent>

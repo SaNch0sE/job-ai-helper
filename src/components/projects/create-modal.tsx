@@ -1,7 +1,7 @@
 "use client"
 
 import CreateProjectAction from "@/actions/projects/create";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, Textarea, useDisclosure } from "@nextui-org/react";
 
 export default function CreateProjectModalBtn() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -24,11 +24,6 @@ export default function CreateProjectModalBtn() {
                   <Button type="submit" color="primary" onPress={onClose}>Create</Button>
                 </form>
               </ModalBody>
-              <ModalFooter>
-                <Button variant="flat" color="secondary" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
             </>
           )}
         </ModalContent>

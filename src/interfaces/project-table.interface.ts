@@ -1,6 +1,6 @@
-import ICreateProjectInput from "./create-input.interface";
+import CreateProjectFormData from "./create-form-data.interface";
 
-export default interface IProjectTable extends ICreateProjectInput {
+export default interface IProjectTable extends CreateProjectFormData {
   id: number;
   features: string;
   techstack: string;

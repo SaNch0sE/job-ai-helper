@@ -11,7 +11,7 @@ export interface IProjectsTableProps extends Partial<IHighlightRow> {
   projects: IProjectTable[],
   lastId: number,
   className: string,
-};
+}
 
 export default function ProjectsTable({ projects, lastId, className, highlightId, highlightStyle }: IProjectsTableProps) {
   return (
@@ -65,6 +65,6 @@ export default function ProjectsTable({ projects, lastId, className, highlightId
       </TableBody>
     </Table>
   );
-};
+}
 
 
