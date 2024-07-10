@@ -2,7 +2,7 @@ import { project } from "@/db/schema/project";
 import Project from "@/interfaces/project.interface";
 import IPagination from "../interfaces/pagination.interface";
 import { dbService } from "@/db/service";
-import { asc, desc, eq, gt, lt } from "drizzle-orm";
+import { asc, cosineDistance, desc, eq, gt, lt, sql } from "drizzle-orm";
 import CreateProjectFormData from "@/interfaces/create-form-data.interface";
 import { createEmbedding } from "../openai/openai.service";
 
@@ -74,6 +74,23 @@ class ProjectService {
     return dbService
       .delete(project)
       .where(eq(project.id, id));
+  }
+
+  async searchByEmbedding(query: string) {
+    const queryEmbedding = await createEmbedding(query);
+    const vectorQuery = `[${queryEmbedding.join(',')}]`;
+
+    const similarity = sql<number>`1 - (${cosineDistance(
+      project.embedding,
+      vectorQuery
+    )})`;
+
+    return dbService
+      .select()
+      .from(project)
+      .where(gt(similarity, 0.5))
+      .orderBy((p) => desc(p.id))
+      .limit(5);
   }
 }
 
