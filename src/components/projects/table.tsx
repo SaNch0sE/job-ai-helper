@@ -9,11 +9,19 @@ import highlightRowById from "./utils/highlight-row-by-id";
 
 export interface IProjectsTableProps extends Partial<IHighlightRow> {
   projects: IProjectTable[],
+  projectsShort: IProjectTable[],
   lastId: number,
   className: string,
 }
 
-export default function ProjectsTable({ projects, lastId, className, highlightId, highlightStyle }: IProjectsTableProps) {
+export default function ProjectsTable({
+  projects,
+  projectsShort,
+  lastId,
+  className,
+  highlightId,
+  highlightStyle
+}: IProjectsTableProps) {
   return (
     <Table
       className={className}
@@ -43,7 +51,7 @@ export default function ProjectsTable({ projects, lastId, className, highlightId
         <TableColumn>Action</TableColumn>
       </TableHeader>
       <TableBody
-        items={projects}
+        items={projectsShort}
         loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => {
@@ -57,7 +65,7 @@ export default function ProjectsTable({ projects, lastId, className, highlightId
               <TableCell>{item.links}</TableCell>
               <TableCell>{item.dateModified}</TableCell>
               <TableCell>{item.dateCreated}</TableCell>
-              <TableCell><ViewProjectModalBtn item={item} /></TableCell>
+              <TableCell><ViewProjectModalBtn item={projects.find((prj) => prj.id === item.id)} /></TableCell>
             </TableRow>
           );
         }

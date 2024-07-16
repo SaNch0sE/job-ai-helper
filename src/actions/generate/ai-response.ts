@@ -1,5 +1,6 @@
 "use server"
 
+import { generateProjectResponse } from "@/services/openai/openai.service";
 import { projectService } from "@/services/projects/projects.service";
 import GenQuerySchema from "@/validation/schemas/gen-query.schema";
 
@@ -15,8 +16,13 @@ export default async function aiGenResponseAction(formData: FormData) {
 
     return;
   }
+  const { query } = validate.data;
 
-  const projects = await projectService.searchByEmbedding(validate.data.query);
+  const projects = await projectService.searchByEmbedding(query);
 
-  return `[generated response... ${JSON.stringify(projects, null, 2)}]`;
+  console.debug(`aiGenResponseAction ${projects}`);
+
+  const projectsContext = projects.map(projectService.concatProjectData).join('\n');
+
+  return generateProjectResponse(projectsContext, query);
 }

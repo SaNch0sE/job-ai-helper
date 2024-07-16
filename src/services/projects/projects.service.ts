@@ -2,27 +2,34 @@ import { project } from "@/db/schema/project";
 import Project from "@/interfaces/project.interface";
 import IPagination from "../interfaces/pagination.interface";
 import { dbService } from "@/db/service";
-import { asc, cosineDistance, desc, eq, gt, lt, sql } from "drizzle-orm";
+import { asc, cosineDistance, desc, eq, getTableColumns, gt, lt, sql } from "drizzle-orm";
 import CreateProjectFormData from "@/interfaces/create-form-data.interface";
-import { createEmbedding } from "../openai/openai.service";
+import { createEmbedding, generateChatCompletion } from "../openai/openai.service";
 
 class ProjectService {
-  private concatProjectData(prj: Partial<Project>): string {
-    if (!prj.name || !prj.description) {
-      throw new Error("invalid project passed. Can't concat");
-    }
-
+  concatProjectData(prj: Partial<Project>): string {
     // Only spaces for better embeddings according to OpenAI
-    return `${prj.name} Description ${prj.description}`
-      + `Features ${prj.features || "Empty..."}`
-      + `Tech stack ${prj.techstack || "Empty..."}`
-      + `Links ${prj.links || "Empty..."}`;
+    return (prj.name ? `${prj.name};` : "")
+      + (prj.description ? `Description ${prj.description};` : "")
+      + (prj.features ? `Features ${prj.features};` : "")
+      + (prj.techstack ? `Tech stack ${prj.techstack};` : "")
+      + (prj.links ? `Links ${prj.links};` : "");
   }
 
   private async createProjectEmbedding(prj: CreateProjectFormData): Promise<Array<number>> {
     const input = this.concatProjectData(prj);
 
-    return createEmbedding(input);
+    const keywords = await generateChatCompletion(`
+      Find keywords in the input: ${input}.
+
+      Do not write anything except found keywords.
+    `);
+
+    console.debug(`Project ${prj.name} keywords: ${keywords}`);
+
+    return createEmbedding(
+      keywords ? `${input}. Project keywords: ${keywords}` : input
+    );
   }
 
   async get(pagination: IPagination): Promise<Project[]> {
@@ -84,11 +91,13 @@ class ProjectService {
       project.embedding,
       vectorQuery
     )})`;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { embedding, ...columns } = getTableColumns(project);
 
     return dbService
-      .select()
+      .select({ ...columns })
       .from(project)
-      .where(gt(similarity, 0.5))
+      .where(gt(similarity, 0.4))
       .orderBy((p) => desc(p.id))
       .limit(5);
   }

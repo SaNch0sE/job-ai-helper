@@ -19,7 +19,8 @@ export default async function PreviousJobs({ searchParams }: IJobsSearchParams) 
         <div className="flex min-h-screen flex-col items-center justify-start p-12 h-screen">
           <ProjectsTable
             className="mt-2"
-            projects={projects.map(transformProjectToTable)}
+            projects={projects.map((prj) => transformProjectToTable(prj))}
+            projectsShort={projects.map((prj) => transformProjectToTable(prj, true))}
             lastId={lastId}
             highlightId={highlightId}
             highlightStyle={highlightStyle} />

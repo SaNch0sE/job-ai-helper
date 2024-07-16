@@ -12,7 +12,7 @@ type FormSubmitThisType = {
 };
 
 export interface IViewProjectModalItem {
-  item: IProjectTable;
+  item?: IProjectTable;
 }
 
 export default function ViewProjectModalBtn({ item }: IViewProjectModalItem) {
@@ -21,9 +21,13 @@ export default function ViewProjectModalBtn({ item }: IViewProjectModalItem) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  if (!item) {
+    return (<></>);
+  }
+
   const onFormSubmit = function (this: FormSubmitThisType) {
     router.push(pathname);
-    
+
     return this.onClose();
   };
 

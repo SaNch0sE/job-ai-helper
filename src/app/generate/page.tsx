@@ -29,7 +29,7 @@ export default function GenerateResponse() {
 
       const generated = await aiGenResponseAction(formData);
 
-      setResponse(response + "\nresponse data:" + generated)
+      setResponse(response + "\n" + generated)
 
       setClicked(false);
     };
