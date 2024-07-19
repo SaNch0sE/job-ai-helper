@@ -1,46 +1,66 @@
 "use client"
 
-// import aiGenResponseAction from "@/actions/generate/ai-response";
-import { Button, Card, Link, ScrollShadow, Textarea } from "@nextui-org/react";
-// import { MouseEvent, useEffect, useState } from "react";
+import aiGenResponseAction from "@/actions/generate/ai-response";
+import { Button, Link, Textarea } from "@nextui-org/react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { PlusIcon } from "../assets/plus-icon";
 import { SendArrowIcon } from "../assets/send-arrow-icon"
+import ChatCard, { ChatEntry } from "@/components/generate/chat-card";
 
 export default function GenerateResponse() {
-  // const [query, setQuery] = useState('');
-  // const [response, setResponse] = useState('');
-  // const [clicked, setClicked] = useState(false);
-  // const [btnAvailable, setBtnAvailable] = useState(true);
-  //
-  // const onGenerate = async (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //
-  //   if (query === '') return;
-  //
-  //   setClicked(true);
-  // };
-  //
-  // useEffect(() => {
-  //   if (!clicked) return;
-  //   setBtnAvailable(false);
-  //
-  //   const genResponse = async () => {
-  //     const formData = new FormData();
-  //
-  //     formData.set("query", query);
-  //
-  //     const generated = await aiGenResponseAction(formData);
-  //
-  //     setResponse(response + "\n" + generated)
-  //
-  //     setClicked(false);
-  //   };
-  //
-  //   genResponse();
-  //
-  //   return () => { setBtnAvailable(true) };
-  // }, [clicked, response, query])
-  const exampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud";
+  const [query, setQuery] = useState('');
+  const [clicked, setClicked] = useState(false);
+  const [btnAvailable, setBtnAvailable] = useState(true);
+  const [chatEntries, setChatEntries] = useState<ChatEntry[]>([]);
+  const chatBlockRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = (ref: MutableRefObject<null | HTMLDivElement>) => {
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  };
+  useEffect(() => scrollToBottom(chatBlockRef), [chatEntries])
+
+  const onSend = () => {
+    if (query === "") return;
+    setChatEntries(chatEntries.concat({
+      id: chatEntries.length,
+      text: query,
+      side: "left"
+    }));
+
+    setClicked(true);
+  };
+
+  useEffect(() => {
+    if (!clicked || query.length < 4) return;
+
+    setBtnAvailable(false);
+
+    const genResponse = async () => {
+      const formData = new FormData();
+
+      formData.set("query", query);
+
+      setQuery("");
+      const generated = await aiGenResponseAction(formData);
+
+      if (generated) {
+        setChatEntries(chatEntries.concat({
+          id: chatEntries.length,
+          text: generated,
+          side: "right",
+        }));
+      }
+
+      setClicked(false);
+    };
+
+    genResponse();
+
+    return () => { setBtnAvailable(true) };
+  }, [clicked, chatEntries, query])
 
   return (
     <div className="flex flex-row w-full h-full overflow-hidden">
@@ -63,23 +83,29 @@ export default function GenerateResponse() {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col p-4 justify-between w-full md:w-3/4">
-        <ScrollShadow hideScrollBar className="flex-1 overflow-auto">
-          <div className="grid gap-4">
-            <div className="flex items-start p-2" key={1}>
-              <Card className="whitespace-pre-line min-h-[40px] max-h-[300px] max-w-[400px] p-4">{exampleText}</Card>
-            </div>
-            <div className="flex items-start justify-end" key={2}>
-              <Card className="whitespace-pre-line min-h-[40px] max-h-[300px] max-w-[400px] p-4">{exampleText + "\n\n2222"}</Card>
-            </div>
+      <div className="flex flex-col p-4 gap-4 justify-between w-full md:w-3/4">
+        <div className="overflow-y-scroll overflow-x-hidden no-scrollbar flex-1">
+          <div ref={chatBlockRef} className="grid gap-4">
+            {chatEntries.map(ChatCard)}
           </div>
-        </ScrollShadow>
-        <div className="flex flex-row w-full bg-default-100 items-end p-2 rounded-xl">
-          <Textarea minRows={1} placeholder="Write query here..."></Textarea>
-          <Button isIconOnly color="success">
+        </div>
+        <form onSubmit={onSend} className="flex flex-row w-full bg-default-100 items-end p-2 rounded-xl">
+          <Textarea
+            minRows={1}
+            placeholder="Write query here..."
+            value={query}
+            onKeyDown={(e) => (e.key === "Enter" ? onSend() : null)}
+            onChange={(e) => setQuery(e.target.value)}
+          ></Textarea>
+          <Button
+            isIconOnly
+            color="success"
+            type="submit"
+            disabled={!btnAvailable}
+          >
             <SendArrowIcon />
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );
